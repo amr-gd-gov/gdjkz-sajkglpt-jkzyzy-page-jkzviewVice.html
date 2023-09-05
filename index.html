@@ -1,0 +1,236 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta charset="utf-8" />
+
+		<link rel="stylesheet" href="css/style2.css" />
+		<link type="text/css" rel="stylesheet" href="css/mui.min.css" />
+		<link type="text/css" rel="stylesheet" href="messagealert/css/zdialog.css" />
+		<link type="text/css" rel="stylesheet" href="css/mui.dtpicker.css" />
+		<link type="text/css" rel="stylesheet" href="css/mui.picker.min.css" />
+		<script src="js/jquery-3.2.1.min.js"></script>
+		<script src="js/jquery.cookie.js"></script>
+		<script src="messagealert/js/zdialog.js"></script>
+		<script src="js/jquery.qrcode.min.js"></script>
+		<script src="js/iruitechCommon.js"></script>
+		<script src="js/mui.min.js"></script>
+		<script src="js/mui.dtpicker.js"></script>
+		<script src="js/mui.picker.min.js"></script>
+		<title>健康证查询</title>
+	</head>
+	<style>
+		.divteImg {
+			width: 81px;
+			height: 89px;
+			margin-top: -16px;
+		}
+
+		
+		.divteImg img {
+			width: 79px;
+			height: 87px !important
+		}
+	</style>
+	<body>
+		<body class="main_bg">
+			<div class="panel-body" >
+				<div class="row" style="width: 7rem; height: 5rem; margin: 0 auto;  padding: 0; border: 1px solid #F9FAFB; border-radius: 10px; box-shadow: 0px 0px 15px #2a2a2a;">
+					<p style="text-align: center; font-size: 16px; margin-top: .2rem;color: inherit;">
+						<strong>广东省食品从业人员健康证明</strong>
+					</p>
+
+					<div id="card"></div>
+					<div id="vaildate"></div>
+					<div style="text-align: center;margin: 0 auto;display: inline-block; font-size: 10px; width:100%;">
+						<strong>广东省市场监督管理局制</strong>
+						
+					</div>
+				</div>
+				<div class="row" style="width: 7rem; height: 5rem; margin: 0 auto;   border: 1px solid #F9FAFB; border-radius: 10px; box-shadow: 0px 0px 15px #2a2a2a;margin-top:5px">
+					<img class="zhang" style="width:7rem;height:5rem" src="images/back.png"/>
+				</div>
+				<div id="ecode" class="row" style="width: 330px; margin: 0 auto; margin-top: 15px; border: 0; padding: 0; border: 1px solid #F9FAFB;">
+					<div id="code" style="text-align: center;"></div>
+				</div> 
+				
+				
+				<div class="row" style="width: 330px; margin: 0 auto; margin-top: 10px; border: 2px solid #f0f2f4; padding: 0;">
+					<p style="text-align: center; font-size: 16px; margin-top: 10px; color: #555555">
+						<strong>此健康证信息已上报平台</strong>
+					</p>
+
+
+				</div>
+				
+
+			</div>
+		</body>
+	</body>
+	<script type="text/javascript" charset="utf-8">
+	
+	//获取请求中的id值
+	var id = GetQueryString("id");
+	$(document).ready(function(){
+		
+		creatCard(id);
+	});
+	
+	function GetQueryString(name){
+	     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	     var r = window.location.search.substr(1).match(reg);//search,查询？后面的参数，并匹配正则
+	     if(r!=null)return  decodeURI(r[2]); return null;
+	}
+		
+		
+		
+
+		
+
+
+
+		// H5 plus事件处理
+		var as = 'pop-in'; // 默认窗口动画
+		function plusReady() {
+			// 隐藏滚动条
+			plus.webview.currentWebview().setStyle({
+				scrollIndicator: 'none'
+			});
+			compatibleAdjust();
+
+		}
+		if (window.plus) {
+			plusReady();
+		} else {
+			document.addEventListener('plusready', plusReady, false);
+		}
+		// DOMContentLoaded事件处理
+		var _domReady = false;
+		document.addEventListener('DOMContentLoaded', function() {
+			_domReady = true;
+			compatibleAdjust();
+		}, false);
+		// 兼容性样式调整
+		var _adjust = false;
+
+		function compatibleAdjust() {
+			if (_adjust || !window.plus || !_domReady) {
+				return;
+			}
+			_adjust = true;
+			// iOS平台特效
+			if ('iOS' == plus.os.name) {
+				document.getElementById('content').className = 'scontent'; // 使用div的滚动条
+				if (navigator.userAgent.indexOf('StreamApp') >= 0) { // 在流应用模式下显示返回按钮
+					document.getElementById('back').style.visibility = 'visible';
+				}
+			}
+			// 预创建二级窗口
+			//	preateWebviews();
+			// 关闭启动界面
+			plus.navigator.setStatusBarBackground('#0073e6');
+			setTimeout(function() {
+				plus.navigator.closeSplashscreen();
+			}, 200);
+		}
+
+		mui.plusReady(function() {
+			plus.webview.currentWebview().setStyle({
+				scrollIndicator: 'none'
+			});
+			
+			
+		});
+		
+		
+		//发送ajax请求，查询id
+		/*function creatCard(id){
+			
+			$.ajax({
+				type : "POST",
+				url : getAllUrl() + "app/jkzviewVice",
+				data : {
+					id : id
+				},
+				dataType : "",
+				async : 'false',
+				success : function(data) {
+					var name = data.data.name;
+					if (data.code == '1') {
+						var html = '<div class="row"><div style="float: left; width:75%; padding-left: .3rem;">';
+						html +='<div style="font-size: small; margin-top: .1rem;">姓&emsp;&emsp;名：习近平<strong>'+data.data.name+'</strong>&nbsp;&nbsp;&nbsp;性&nbsp;&nbsp;&nbsp;&nbsp;别：<strong>'+(data.data.gender==1?'男':(data.data.gender == '男'?'男':'女'))+'</strong></div>'
+						html +='<div style="font-size: small; margin-top: .2rem;">身份证号码：440582199999999999<strong><span id="idcard">'+data.data.idcard+'</span></strong></div>';
+						html +='<div style="font-size: small; ">(或其他有效证明)</div>';
+					//	html +='<div style="margin-top: 6px;"><div style="font-size: small;">从业类别：<strong>'+(data.data.certTypeName !='null'?data.data.certTypeName:'')+'</strong></div></div>';
+						//html +='<div style="margin-top: 6px;"><div style="font-size: small;">从业类别：<strong>食品卫生</strong></div></div>';
+						if(mui.os.android){
+							html +='<div style="margin-left:4rem;margin-top:-10px;position:absolute;z-index:99;"><img class="zhang" style="width:1.5rem;height:1.5rem;" src="images/fd_zhang.png"></img></div>';
+						}else {
+							html +='<div style="margin-left:3.5rem;margin-top:-10px;position:absolute;z-index:99;"><img class="zhang" style="width:1.5rem;height:1.5rem;" src="images/fd_zhang.png"></img></div>';
+						}			
+						html +='<div style="font-size: small; margin-top: .2rem;z-index:3;">体检单位：<strong>'+data.data.orgName+'</strong></div></div>';	
+						var cHead = "";
+						if(data.data.capHead != "null" && data.data.capHead != null){
+							cHead = data.data.capHead;
+						}else{
+							cHead = "null";
+						}
+						var picsrc = getJkzPicURL(cHead !='null'?capHead:data.data.head);
+						html +='<div style="float: left; width: 25%;"><div class="divteImg" style="margin-top:.4rem"><img class="zhang" src="'+picsrc+'" alt="" /></div></div>'			
+						html +=	'</div>';
+						var $card = $('#card');
+						$card.html(html);
+						
+						var dateHtml = '<div class="row" style="float: left;padding-left: .3rem; width:100%;margin-top: .1rem;"><div style="font-size: small;">';
+						dateHtml +='体检日期：<strong><span id="rq">'+data.data.validDate+'</span>（有效期一年）</strong></div></div>';
+						var $date = $('#vaildate');
+						$date.html(dateHtml);
+					} else {
+						top.layer.alert(data.msg);
+					}
+				}
+			});
+		}*/
+		var name = '陈弼豪';
+		var gender = '男';
+		var idcard = '44058219960722003X';
+		var orgName = "潮阳宏济医院";
+		
+		
+		var html = '<div class="row"><div style="float: left; width:75%; padding-left: .3rem;">';
+		html +='<div style="font-size: small; margin-top: .1rem;">姓&emsp;&emsp;名：<strong>'+name+'</strong>&nbsp;&nbsp;&nbsp;性&nbsp;&nbsp;&nbsp;&nbsp;别：<strong>'+ gender +'</strong></div>'
+		html +='<div style="font-size: small; margin-top: .2rem;">身份证号码：<strong><span id="idcard">' +idcard+ '</span></strong></div>';
+		html +='<div style="font-size: small; ">(或其他有效证明)</div>';
+		if(mui.os.android){
+			html +='<div style="margin-left:4rem;margin-top:-10px;position:absolute;z-index:99;"><img class="zhang" style="width:1.5rem;height:1.5rem;" src="images/fd_zhang.png"></img></div>';
+		}else {
+			html +='<div style="margin-left:3.5rem;margin-top:-10px;position:absolute;z-index:99;"><img class="zhang" style="width:1.5rem;height:1.5rem;" src="images/fd_zhang.png"></img></div>';
+		}
+		
+		if(mui.os.android){
+			html +='<div style="margin-left:4rem;margin-top:-10px;position:absolute;z-index:99;"><img class="zhang" style="width:1.5rem;height:1.5rem;" src="images/fd_zhang.png"></img></div>';
+		}else {
+			html +='<div style="margin-left:3.5rem;margin-top:-10px;position:absolute;z-index:99;"><img class="zhang" style="width:1.5rem;height:1.5rem;" src="images/fd_zhang.png"></img></div>';
+		}	
+		html +='<div style="font-size: small; margin-top: .2rem;z-index:3;">体检单位：<strong>'+orgName+'</strong></div></div>';	
+		var headurl = 'https://amr.gd.gov.cn/gdjkz/file/2022/10/23/cf3c6889c0e04c9b971daf7aa2dbd3ec'
+		html +='<div style="float: left; width: 25%;"><div class="divteImg" style="margin-top:.4rem"><img class="zhang" src="'+headurl+'" alt="" /></div></div>'			
+		html +=	'</div>';
+		var $card = $('#card');
+		$card.html(html);
+		
+		$("#code").qrcode({width: 90,height: 90,text: window.location.href});
+		
+		var dateHtml = '<div class="row" style="float: left;padding-left: .3rem; width:100%;margin-top: .1rem;"><div style="font-size: small;">';
+		dateHtml +='体检日期：<strong><span id="rq">'+'2023年8月15日'+'</span>（有效期一年）</strong></div></div>';
+		var $date = $('#vaildate');
+		$date.html(dateHtml);
+		
+	</script>
+</html>
